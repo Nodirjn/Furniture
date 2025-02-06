@@ -1,0 +1,174 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block body %}id="blog-list-sidebar-left" class="blog"{% endblock %}
+{% block content %}
+    <div class="main-content">
+        <div id="wrapper-site">
+            <div id="content-wrapper">
+                <div id="main">
+                    <div class="page-home">
+
+                        <!-- breadcrumb -->
+                        <nav class="breadcrumb-bg">
+                            <div class="container no-index">
+                                <div class="breadcrumb">
+                                    <ol>
+                                        <li>
+                                            <a href="">{% url 'pages:home' %}
+                                                <span>{% trans 'Home' %}</span>
+                                            </a>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </nav>
+                        <div class="container">
+                            <div class="content">
+                                <div class="row">
+                                    <div class="sidebar-3 sidebar-collection col-lg-3 col-md-3 col-sm-4">
+
+                                        <!-- category -->
+                                        <div class="sidebar-block">
+                                            <div class="title-block">{% trans 'Categories' %}</div>
+                                            <div class="block-content">
+                                                {% for category in categories %}
+                                                    {% if category.parent %}
+                                                    {% else %}
+                                                        <div class="cateTitle hasSubCategory open level1">
+                                                    <span class="arrow collapse-icons collapsed" data-toggle="collapse" data-target="#{{ category.id }}" aria-expanded="false" role="status">
+                                                        <i class="zmdi zmdi-minus"></i>
+                                                        <i class="zmdi zmdi-plus"></i>
+                                                    </span>
+                                                    <a class="cateItem" href="?category={{ category.id }}">{{ category.title }}</a>
+                                                    <div class="subCategory collapse" id="{{ category.id }}" aria-expanded="true" role="status">
+                                                        {% for child in category.children.all %}
+                                                        <div class="cateTitle">
+                                                            <a href="?category={{ child.id }}" class="cateItem">{{ child.title }}</a>
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+                                        <!-- recent posts -->
+                                        <div class="sidebar-block">
+                                            <div class="title-block">{% trans 'Recent Posts' %}</div>
+                                            <div class="post-item-content">
+                                                {% for recent_blog in recent_blogs %}
+                                                <div>
+                                                    <div class="late-item first-child">
+                                                        <a href="{% url 'blogs:detail' pk=recent_blog.id %}">
+                                                            <p class="content-title">{{ recent_blog.title }}</p>
+                                                        </a>
+                                                        <span>
+                                                            <i class="zmdi zmdi-comments"></i>{{ recent_blog.comments.count }} {% trans 'comment' %}
+                                                        </span>
+                                                        <span>
+                                                            <i class="zmdi zmdi-calendar-note"></i>
+                                                            {{ recent_blog.created_at|date:'d M Y' }}
+                                                        </span>
+                                                        <p class="description">
+                                                            {{ recent_blog.description|slice:'73' }}
+                                                        </p>
+                                                        <p class="remove">
+                                                            <a href="{% url 'blogs:detail' pk=recent_blog.id %}">{% trans 'READ MORE' %}</a>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+
+                                            </div>
+                                        </div>
+
+                                        <!-- product tag -->
+                                        <div class="sidebar-block product-tags">
+                                            <div class="title-block">
+                                               {% trans ' Blog Tags' %}
+                                            </div>
+                                            <div class="block-content">
+                                                <ul class="listSidebarBlog list-unstyled">
+                                                    {% for tag in tags %}
+                                                    <li>
+                                                        <a href="?tag={{ tag.id }}" title="Show products matching tag Hot Trend">{{ tag.title }}</a>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <!-- advertising -->
+                                        <div class="sidebar-block group-image-special">
+                                            <div class="effect">
+                                                <a href="#">
+                                                    <img class="img-fluid" src="{% static 'img/b'%}log/advertising.jpg" alt="banner-2" title="banner-2">
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-8 col-lg-9 col-md-9 flex-xs-first main-blogs">
+                                        <h2>Recent Posts</h2>
+                                        {% for blog in blogs %}
+                                        <div class="list-content row">
+                                            <div class="hover-after col-md-5 col-xs-12">
+                                                <a href="{% url 'blogs:detail' pk=blog.id %}">
+                                                    <img src="{{ blog.image.url }}" alt="img">
+                                                </a>
+                                            </div>
+                                            <div class="late-item col-md-7 col-xs-12">
+                                                <p class="content-title">
+                                                    <a href="{% url 'blogs:detail' pk=blog.id %}">{{ blog.title }}</a>
+                                                </p>
+                                                <p class="post-info">
+                                                    <span>{{ blog.created_at|timesince }} {% trans 'ago' %} </span>
+                                                    <span>{{blog.comments.count  }} {% trans 'Comments' %}</span>
+                                                    {% for author in blog.author.all %}
+                                                    <span>{{ author.get_full_name }}</span>
+                                                        {% endfor %}
+                                                </p>
+                                                <p class="description">{{ blog.description|slice:'200' }}
+                                                </p>
+                                                <span class="view-more">
+                                                    <a href="{% url 'blogs:detail' pk=blog.id%}">{% trans 'view more'%}</a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        <div class="page-list col">
+                                            <ul class="justify-content-center d-flex">
+                                                <li>
+                                                    <a rel="prev" href="#" class="previous disabled js-search-link">
+                                                        Previous
+                                                    </a>
+                                                </li>
+                                                <li class="current active">
+                                                    <a rel="nofollow" href="#" class="disabled js-search-link">
+                                                        1
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a rel="nofollow" href="#" class="disabled js-search-link">
+                                                        2
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a rel="next" href="#" class="next disabled js-search-link">
+                                                        Next
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
